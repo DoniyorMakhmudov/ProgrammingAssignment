@@ -190,7 +190,7 @@ class Manager:
 
     def view_customer_reservations(self, customer_name):
         print(f"\nReservations for {customer_name}:")
-        for reservation in self.reservations:
+        for reservation_name, reservation in self.reservations.items():
             if reservation.name == customer_name:
                 order_items = [str(self.item.menu[item_id]['name']) for item_id in reservation.order]
                 order_str = ', '.join(order_items)
@@ -199,9 +199,9 @@ class Manager:
 
     def update_customer_reservation(self, customer_name):
         print(f"\nUpdating reservation for {customer_name}:")
-        for i, reservation in enumerate(self.reservations):
+        for reservation_name, reservation in self.reservations.items():
             if reservation.name == customer_name:
-                print(f"Reservation {i + 1}:")
+                print(f"Reservation for {customer_name}:")
                 print(reservation)
 
                 while True:
@@ -228,13 +228,13 @@ class Manager:
 
     def cancel_customer_reservation(self, customer_name):
         print(f"\nCanceling reservation for {customer_name}:")
-        for i, reservation in enumerate(self.reservations):
+        for reservation_name, reservation in self.reservations.items():
             if reservation.name == customer_name:
-                print(f"Reservation {i + 1}:")
+                print(f"Reservation {reservation_name}:")
                 print(reservation)
                 confirm = input("Are you sure you want to cancel this reservation? (yes/no): ")
                 if confirm.lower() == 'yes':
-                    removed_reservation = self.reservations.pop(i)
+                    removed_reservation = self.reservations.pop(reservation_name)
                     print(f"Reservation canceled successfully for {customer_name}")
                     break
                 else:
@@ -304,15 +304,15 @@ class Manager:
 
     def view_all_reservations(self):
         print("\nReservations for All Customers:")
-        for reservation in self.reservations:
-            self.display_reservation_details(reservation)
+        for customer_name, reservation in self.reservations.items():
+            self.display_reservation_details(customer_name, reservation)
 
-    def display_reservation_details(self, reservation):
+    def display_reservation_details(self, customer_name, reservation):
         order_items = [str(self.item.menu[item_id]['name']) for item_id in reservation.order]
         order_str = ', '.join(order_items)
         total_price = reservation.calculate_total_price()
         print(
-            f"Name: {reservation.name}, Table: {reservation.table_number}, Order: {order_str}, Total Price: ${total_price:.2f}")
+            f"Name: {customer_name}, Table: {reservation.table_number}, Order: {order_str}, Total Price: ${total_price:.2f}")
 
     def add_menu_item(self):
         name = input("Enter the name of the new item: ")
@@ -327,13 +327,13 @@ class Manager:
             description = input("Enter the new description of the item: ")
             self.item.update_item(item_id, name, price, description)
         else:
-            print("Invalid item ID please try again.")
+            print("Invalid item ID. Please try again.")
 
     def delete_menu_item(self, item_id):
         if item_id in self.item.menu:
             self.item.remove_item(item_id)
         else:
-            print("Invalid item id please try again.")
+            print("Invalid item ID. Please try again.")
 
 
 if __name__ == "__main__":
